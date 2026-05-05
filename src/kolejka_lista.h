@@ -61,6 +61,20 @@ public:
         rozmiarObecny++;
     }
 
+    // Usuwa i zwraca element o najwyzszym priorytecie (z glowy listy). Zlozonosc O(1).
+    ElementKolejki extractMax() {
+        if (glowa == nullptr) {
+            std::cout << "Kolejka jest pusta!" << std::endl;
+            return ElementKolejki{0, 0, 0};
+        }
+        ElementKolejki wynik = glowa->dane;
+        Wezel* doUsuniecia = glowa;
+        glowa = glowa->nastepny;
+        delete doUsuniecia;
+        rozmiarObecny--;
+        return wynik;
+    }
+
     // Zwraca element o najwyzszym priorytecie bez usuwania. Zlozonosc O(1).
     ElementKolejki peek() const {
         if (glowa == nullptr) {
