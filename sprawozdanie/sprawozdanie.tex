@@ -1,0 +1,163 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{lmodern}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{caption}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    showstringspaces=false
+}
+
+\title{Struktury Danych \\ Miniprojekt 2 \\ Kolejka priorytetowa}
+\author{Paweł Bijak}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Cel projektu}
+
+Celem projektu jest zaimplementowanie własnymi środkami kolejki priorytetowej
+typu MAX w języku C++ w oparciu o dwie różne struktury danych oraz przeprowadzenie
+pomiarów czasu wykonania podstawowych operacji w celu praktycznej weryfikacji
+ich teoretycznej złożoności obliczeniowej. Wybrane struktury to:
+\begin{itemize}
+    \item kopiec binarny przechowywany w tablicy,
+    \item jednokierunkowa lista wiązana posortowana malejąco po priorytecie.
+\end{itemize}
+
+\section{Charakterystyka kolejki priorytetowej}
+
+Kolejka priorytetowa to abstrakcyjny typ danych, w którym każdy element posiada
+dodatkową wartość zwaną priorytetem. Kolejność obsługi elementów wyznacza
+priorytet, a nie moment dodania do struktury. W wariancie MAX pierwszeństwo ma
+element o najwyższym priorytecie.
+
+W projekcie każdy element jest reprezentowany przez strukturę zawierającą:
+\begin{itemize}
+    \item wartość elementu (\texttt{int}),
+    \item priorytet (\texttt{int}),
+    \item numer wstawienia (\texttt{long long}) -- pole pomocnicze dla strategii FIFO.
+\end{itemize}
+
+\subsection{Strategia FIFO przy równych priorytetach}
+
+W przypadku wielu elementów o tym samym priorytecie przyjęto strategię FIFO
+(first in, first out). Każdy element przy wstawianiu otrzymuje rosnący numer
+wstawienia. Przy porównaniu dwóch elementów o tym samym priorytecie
+pierwszeństwo ma ten o mniejszym numerze wstawienia (czyli wstawiony wcześniej).
+
+W przypadku operacji \texttt{modifyKey} przyjęto, że modyfikowany element
+zachowuje swój pierwotny numer wstawienia. Oznacza to, że element po zmianie
+priorytetu nie traktuje się jako ,,nowy''. Jest to spójne z intuicją, że
+zmieniamy jedynie priorytet istniejącego elementu, a nie wstawiamy go na nowo.
+
+\section{Implementacje}
+
+\subsection{Kopiec binarny}
+
+Kopiec binarny to drzewo binarne spełniające własność kopca: priorytet rodzica
+jest większy lub równy priorytetowi każdego z jego dzieci (kopiec MAX).
+W~projekcie kopiec został zaimplementowany jako tablica dynamiczna z indeksowaniem
+0--bazowym, gdzie:
+\begin{itemize}
+    \item rodzic węzła $i$ znajduje się pod indeksem $\lfloor (i-1)/2 \rfloor$,
+    \item lewe dziecko węzła $i$ znajduje się pod indeksem $2i+1$,
+    \item prawe dziecko węzła $i$ znajduje się pod indeksem $2i+2$.
+\end{itemize}
+
+W razie braku miejsca tablica jest powiększana dwukrotnie. Operacje przywracające
+własność kopca to \texttt{kopcujWGore} (po wstawieniu elementu) oraz
+\texttt{kopcujWDol} (po wyciągnięciu maksimum lub modyfikacji w dół).
+
+\subsubsection*{Złożoność operacji}
+\begin{itemize}
+    \item \texttt{insert} -- $O(\log n)$ (przesuwanie nowego elementu do właściwej pozycji),
+    \item \texttt{extractMax} -- $O(\log n)$ (przywrócenie własności kopca po usunięciu korzenia),
+    \item \texttt{peek} -- $O(1)$ (korzeń tablicy),
+    \item \texttt{modifyKey} -- $O(n)$ (liniowe wyszukiwanie elementu po wartości) plus $O(\log n)$ na naprawę kopca,
+    \item \texttt{rozmiar} -- $O(1)$.
+\end{itemize}
+
+\subsection{Lista wiązana}
+
+Lista wiązana jednokierunkowa posortowana malejąco po priorytecie. Element
+o~najwyższym priorytecie znajduje się zawsze na początku listy (głowa). Przy
+wstawianiu element trafia za wszystkie istniejące elementy o tym samym lub
+wyższym priorytecie, co realizuje strategię FIFO.
+
+\subsubsection*{Złożoność operacji}
+\begin{itemize}
+    \item \texttt{insert} -- $O(n)$ (znalezienie odpowiedniej pozycji),
+    \item \texttt{extractMax} -- $O(1)$ (zdjęcie głowy listy),
+    \item \texttt{peek} -- $O(1)$ (zwrócenie głowy bez modyfikacji),
+    \item \texttt{modifyKey} -- $O(n)$ (wyszukanie i ponowne wstawienie),
+    \item \texttt{rozmiar} -- $O(1)$ (utrzymywany licznik).
+\end{itemize}
+
+\section{Metodyka pomiarów}
+
+\subsection{Środowisko}
+
+Pomiary wykonano na komputerze osobistym pod systemem Windows 10. Kompilacji
+dokonano kompilatorem g++ (MSYS2/UCRT64, wersja 15.2.0) z flagami
+\texttt{-O2 -std=c++17}. Czas mierzono z wykorzystaniem \texttt{std::chrono::steady\_clock}
+z dokładnością do nanosekund.
+
+\subsection{Sposób generowania danych}
+
+Wartości elementów losowano z zakresu $[-1000, 1000]$. Priorytety losowano
+z~zakresu $[0, 5n - 1]$, gdzie $n$ jest aktualnym rozmiarem kolejki. Zakres
+priorytetów został wybrany jako pięciokrotnie większy od rozmiaru struktury,
+zgodnie z zaleceniem treści projektu (,,kilkukrotnie większy''). Rozmiary
+kolejek dobrane do badań to: $1\,000$, $2\,000$, $5\,000$, $10\,000$, $20\,000$,
+$50\,000$, $100\,000$.
+
+\subsection{Schemat pomiaru}
+
+Dla każdego rozmiaru $n$ wykonano \textbf{5 niezależnych powtórzeń}
+całego eksperymentu, a wyniki uśredniono. W każdym powtórzeniu:
+\begin{itemize}
+    \item operacja \texttt{insert} -- mierzono łączny czas wstawienia $n$ elementów do pustej kolejki, a~wynik podzielono przez $n$ (czas amortyzowany pojedynczego wstawienia),
+    \item operacja \texttt{peek}, \texttt{modifyKey}, \texttt{extractMax} -- na pełnej kolejce o~rozmiarze $n$ wykonywano serię $K = \min(1000, n)$ wywołań i mierzono ich łączny czas, a~następnie dzielono przez $K$,
+    \item operacja \texttt{rozmiar} -- ze względu na bardzo małą złożoność wykonywano $100\,000$ wywołań i wynik dzielono przez tę liczbę.
+\end{itemize}
+
+Zgodnie z założeniami, dla operacji \texttt{peek} i \texttt{rozmiar}, których
+wynik nie jest wykorzystywany, dodano akumulator z modyfikatorem \texttt{volatile}
+aby zapobiec optymalizacji usuwającej wywołanie przez kompilator.
+
+\section{Wyniki pomiarów}
+
+\textit{Wykresy i analiza zostaną dodane po zebraniu pełnego zestawu wyników.}
+
+\section{Wnioski}
+
+\textit{Wnioski zostaną sformułowane na podstawie pomiarów.}
+
+\end{document}
