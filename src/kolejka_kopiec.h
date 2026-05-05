@@ -121,4 +121,28 @@ public:
     bool pusta() const {
         return rozmiarObecny == 0;
     }
+
+    // Zmienia priorytet pierwszego napotkanego elementu o wartosci e na nowyPriorytet.
+    // Zwraca true jesli element zostal znaleziony, false w przeciwnym razie.
+    // Zlozonosc O(n) - liniowe wyszukiwanie elementu plus O(log n) na naprawe kopca.
+    bool modifyKey(int e, int nowyPriorytet) {
+        int indeks = -1;
+        for (int i = 0; i < rozmiarObecny; i++) {
+            if (tablica[i].wartosc == e) {
+                indeks = i;
+                break;
+            }
+        }
+        if (indeks == -1) {
+            return false;
+        }
+        int staryPriorytet = tablica[indeks].priorytet;
+        tablica[indeks].priorytet = nowyPriorytet;
+        if (nowyPriorytet > staryPriorytet) {
+            kopcujWGore(indeks);
+        } else if (nowyPriorytet < staryPriorytet) {
+            kopcujWDol(indeks);
+        }
+        return true;
+    }
 };
