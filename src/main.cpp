@@ -3,6 +3,7 @@
 #include "kolejka_kopiec.h"
 #include "kolejka_lista.h"
 #include "pomocnik.h"
+#include "pomiary.h"
 
 // Obsluguje menu operacji na podanej kolejce. Dziala dla dowolnej implementacji
 // kolejki priorytetowej (kopiec lub lista) - wymagane jest jedynie zgodne API.
@@ -113,8 +114,9 @@ int main() {
         std::cout << "\n===== Kolejka priorytetowa MAX =====\n";
         std::cout << "1. Kopiec binarny\n";
         std::cout << "2. Lista wiazana\n";
+        std::cout << "3. Tryb pomiarow (zapis CSV do katalogu wyniki/)\n";
         std::cout << "0. Zakoncz program\n";
-        std::cout << "Wybierz implementacje: ";
+        std::cout << "Wybierz opcje: ";
         int wybor;
         std::cin >> wybor;
 
@@ -124,6 +126,13 @@ int main() {
         } else if (wybor == 2) {
             KolejkaLista lista;
             obslugaMenu(lista, "lista wiazana");
+        } else if (wybor == 3) {
+            std::vector<int> rozmiary = domyslneRozmiary();
+            std::cout << "\n--- Pomiary kopca binarnego ---\n";
+            zmierzKolejke<KolejkaKopiec>(rozmiary, "wyniki/pomiary_kopiec.csv");
+            std::cout << "\n--- Pomiary listy wiazanej ---\n";
+            zmierzKolejke<KolejkaLista>(rozmiary, "wyniki/pomiary_lista.csv");
+            std::cout << "Pomiary zakonczone. Wyniki w katalogu wyniki/.\n";
         } else if (wybor == 0) {
             std::cout << "Koniec programu.\n";
             break;
