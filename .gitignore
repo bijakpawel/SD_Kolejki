@@ -1,3 +1,10 @@
+# Edytory / IDE
+.vscode/
+.idea/
+.claude/
+.cursor/
+.aider*
+
 # Pliki binarne
 *.exe
 *.o
