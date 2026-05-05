@@ -91,4 +91,47 @@ public:
     bool pusta() const {
         return glowa == nullptr;
     }
+
+    // Zmienia priorytet pierwszego napotkanego elementu o wartosci e na nowyPriorytet.
+    // Zwraca true jesli element zostal znaleziony, false w przeciwnym razie.
+    // Element zachowuje swoj oryginalny nrWstawienia, dzieki czemu jego pozycja
+    // wzgledem innych elementow o tym samym nowym priorytecie jest zgodna z FIFO.
+    // Zlozonosc O(n) - liniowe wyszukiwanie i ponowne wstawienie.
+    bool modifyKey(int e, int nowyPriorytet) {
+        // Szukamy wezla o wartosci e oraz jego poprzednika.
+        Wezel* poprzedni = nullptr;
+        Wezel* aktualny = glowa;
+        while (aktualny != nullptr && aktualny->dane.wartosc != e) {
+            poprzedni = aktualny;
+            aktualny = aktualny->nastepny;
+        }
+        if (aktualny == nullptr) {
+            return false;
+        }
+
+        // Wypinamy wezel z listy.
+        if (poprzedni == nullptr) {
+            glowa = aktualny->nastepny;
+        } else {
+            poprzedni->nastepny = aktualny->nastepny;
+        }
+
+        // Aktualizujemy priorytet zachowujac numer wstawienia.
+        aktualny->dane.priorytet = nowyPriorytet;
+        aktualny->nastepny = nullptr;
+
+        // Wstawiamy ponownie w odpowiednie miejsce wedlug regul FIFO.
+        if (glowa == nullptr || wyzszyPriorytet(aktualny->dane, glowa->dane)) {
+            aktualny->nastepny = glowa;
+            glowa = aktualny;
+            return true;
+        }
+        Wezel* iter = glowa;
+        while (iter->nastepny != nullptr && wyzszyPriorytet(iter->nastepny->dane, aktualny->dane)) {
+            iter = iter->nastepny;
+        }
+        aktualny->nastepny = iter->nastepny;
+        iter->nastepny = aktualny;
+        return true;
+    }
 };
