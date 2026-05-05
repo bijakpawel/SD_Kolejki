@@ -39,6 +39,29 @@ private:
         }
     }
 
+    // Przywraca wlasnosc kopca idac w dol od podanego indeksu.
+    void kopcujWDol(int i) {
+        while (true) {
+            int lewy = 2 * i + 1;
+            int prawy = 2 * i + 2;
+            int najwyzszy = i;
+            if (lewy < rozmiarObecny && wyzszyPriorytet(tablica[lewy], tablica[najwyzszy])) {
+                najwyzszy = lewy;
+            }
+            if (prawy < rozmiarObecny && wyzszyPriorytet(tablica[prawy], tablica[najwyzszy])) {
+                najwyzszy = prawy;
+            }
+            if (najwyzszy != i) {
+                ElementKolejki tmp = tablica[i];
+                tablica[i] = tablica[najwyzszy];
+                tablica[najwyzszy] = tmp;
+                i = najwyzszy;
+            } else {
+                break;
+            }
+        }
+    }
+
 public:
     KolejkaKopiec(int poczatkowaPojemnosc = 16) {
         if (poczatkowaPojemnosc < 1) poczatkowaPojemnosc = 1;
@@ -64,6 +87,21 @@ public:
         tablica[rozmiarObecny] = nowy;
         kopcujWGore(rozmiarObecny);
         rozmiarObecny++;
+    }
+
+    // Usuwa i zwraca element o najwyzszym priorytecie. Zlozonosc O(log n).
+    ElementKolejki extractMax() {
+        if (rozmiarObecny == 0) {
+            std::cout << "Kolejka jest pusta!" << std::endl;
+            return ElementKolejki{0, 0, 0};
+        }
+        ElementKolejki najwyzszy = tablica[0];
+        rozmiarObecny--;
+        if (rozmiarObecny > 0) {
+            tablica[0] = tablica[rozmiarObecny];
+            kopcujWDol(0);
+        }
+        return najwyzszy;
     }
 
     // Zwraca element o najwyzszym priorytecie bez usuwania. Zlozonosc O(1).
