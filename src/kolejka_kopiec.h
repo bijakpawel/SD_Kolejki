@@ -122,6 +122,20 @@ public:
         return rozmiarObecny == 0;
     }
 
+    // Wypisuje zawartosc kopca w kolejnosci tablicowej (poziomami drzewa).
+    // Sluzy do podgladu struktury wewnetrznej, nie odzwierciedla kolejnosci wyciagania.
+    void wypisz() const {
+        if (rozmiarObecny == 0) {
+            std::cout << "(kopiec pusty)" << std::endl;
+            return;
+        }
+        for (int i = 0; i < rozmiarObecny; i++) {
+            std::cout << "[" << i << "] wart=" << tablica[i].wartosc
+                      << " p=" << tablica[i].priorytet
+                      << " nr=" << tablica[i].nrWstawienia << std::endl;
+        }
+    }
+
     // Zmienia priorytet pierwszego napotkanego elementu o wartosci e na nowyPriorytet.
     // Zwraca true jesli element zostal znaleziony, false w przeciwnym razie.
     // Zlozonosc O(n) - liniowe wyszukiwanie elementu plus O(log n) na naprawe kopca.

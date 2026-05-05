@@ -92,6 +92,24 @@ public:
         return glowa == nullptr;
     }
 
+    // Wypisuje zawartosc listy od glowy do konca. Elementy sa juz posortowane
+    // malejaco po priorytecie, wiec to jest jednoczesnie kolejnosc wyciagania.
+    void wypisz() const {
+        if (glowa == nullptr) {
+            std::cout << "(lista pusta)" << std::endl;
+            return;
+        }
+        Wezel* aktualny = glowa;
+        int i = 0;
+        while (aktualny != nullptr) {
+            std::cout << "[" << i << "] wart=" << aktualny->dane.wartosc
+                      << " p=" << aktualny->dane.priorytet
+                      << " nr=" << aktualny->dane.nrWstawienia << std::endl;
+            aktualny = aktualny->nastepny;
+            i++;
+        }
+    }
+
     // Zmienia priorytet pierwszego napotkanego elementu o wartosci e na nowyPriorytet.
     // Zwraca true jesli element zostal znaleziony, false w przeciwnym razie.
     // Element zachowuje swoj oryginalny nrWstawienia, dzieki czemu jego pozycja
