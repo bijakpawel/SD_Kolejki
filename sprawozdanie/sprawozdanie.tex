@@ -155,7 +155,7 @@ rzędu wielkości.
     columns/rozmiarOp/.style={column name={rozmiar}, column type=r, fixed, precision=2},
     every head row/.style={before row=\toprule, after row=\midrule},
     every last row/.style={after row=\bottomrule}
-]{../wyniki/pomiary_kopiec.csv}
+]{pomiary_kopiec.csv}
 \end{table}
 
 \begin{table}[H]
@@ -171,7 +171,7 @@ rzędu wielkości.
     columns/rozmiarOp/.style={column name={rozmiar}, column type=r, fixed, precision=2},
     every head row/.style={before row=\toprule, after row=\midrule},
     every last row/.style={after row=\bottomrule}
-]{../wyniki/pomiary_lista.csv}
+]{pomiary_lista.csv}
 \end{table}
 
 \subsection{Wykresy porównawcze}
@@ -191,8 +191,8 @@ zależność potęgową).
     width=0.8\textwidth,
     height=0.55\textwidth
 ]
-\addplot table [col sep=comma, x=rozmiar, y=insert] {../wyniki/pomiary_kopiec.csv};
-\addplot table [col sep=comma, x=rozmiar, y=insert] {../wyniki/pomiary_lista.csv};
+\addplot table [col sep=comma, x=rozmiar, y=insert] {pomiary_kopiec.csv};
+\addplot table [col sep=comma, x=rozmiar, y=insert] {pomiary_lista.csv};
 \legend{Kopiec binarny, Lista wiązana}
 \end{loglogaxis}
 \end{tikzpicture}
@@ -210,8 +210,8 @@ zależność potęgową).
     width=0.8\textwidth,
     height=0.55\textwidth
 ]
-\addplot table [col sep=comma, x=rozmiar, y=extract] {../wyniki/pomiary_kopiec.csv};
-\addplot table [col sep=comma, x=rozmiar, y=extract] {../wyniki/pomiary_lista.csv};
+\addplot table [col sep=comma, x=rozmiar, y=extract] {pomiary_kopiec.csv};
+\addplot table [col sep=comma, x=rozmiar, y=extract] {pomiary_lista.csv};
 \legend{Kopiec binarny, Lista wiązana}
 \end{loglogaxis}
 \end{tikzpicture}
@@ -229,8 +229,8 @@ zależność potęgową).
     width=0.8\textwidth,
     height=0.55\textwidth
 ]
-\addplot table [col sep=comma, x=rozmiar, y=modify] {../wyniki/pomiary_kopiec.csv};
-\addplot table [col sep=comma, x=rozmiar, y=modify] {../wyniki/pomiary_lista.csv};
+\addplot table [col sep=comma, x=rozmiar, y=modify] {pomiary_kopiec.csv};
+\addplot table [col sep=comma, x=rozmiar, y=modify] {pomiary_lista.csv};
 \legend{Kopiec binarny, Lista wiązana}
 \end{loglogaxis}
 \end{tikzpicture}
@@ -248,8 +248,8 @@ zależność potęgową).
     width=0.8\textwidth,
     height=0.55\textwidth
 ]
-\addplot table [col sep=comma, x=rozmiar, y=peek] {../wyniki/pomiary_kopiec.csv};
-\addplot table [col sep=comma, x=rozmiar, y=peek] {../wyniki/pomiary_lista.csv};
+\addplot table [col sep=comma, x=rozmiar, y=peek] {pomiary_kopiec.csv};
+\addplot table [col sep=comma, x=rozmiar, y=peek] {pomiary_lista.csv};
 \legend{Kopiec binarny, Lista wiązana}
 \end{loglogaxis}
 \end{tikzpicture}
