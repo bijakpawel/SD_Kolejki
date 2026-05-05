@@ -1,0 +1,98 @@
+% =============================================================
+%   header.tex - preambula i szablon strony tytulowej
+%   do sprawozdan ze Struktur Danych (Politechnika Wroclawska)
+% =============================================================
+
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{lmodern}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{hyperref}
+\usepackage{siunitx}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue
+}
+
+\sisetup{
+    output-exponent-marker=\ensuremath{\mathrm{e}},
+    round-mode=figures,
+    round-precision=3,
+    group-separator={\,}
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    showstringspaces=false
+}
+
+% -------------------------------------------------------------
+% \frontpage{kurs}{kierunek}{termin}{-}{-}{daneOsobowe}{link}{data}{nrProjektu}
+%
+% Argumenty 4 i 5 nie sa wykorzystywane w aktualnej wersji
+% szablonu (pozostawione dla zgodnosci - mozna podawac myslnik "-").
+% -------------------------------------------------------------
+\newcommand{\frontpage}[9]{%
+    \thispagestyle{empty}
+    \noindent
+    \begin{minipage}[c]{0.78\textwidth}
+        \centering
+        \fbox{\rule{0pt}{1.8em}\ \LARGE\textbf{#1}\ \rule{0pt}{1.8em}}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}[c]{0.18\textwidth}
+        \centering
+        % Logo PWr - umiesc plik logo_pwr.png w katalogu sprawozdania.
+        \IfFileExists{logo_pwr.png}{%
+            \includegraphics[width=\textwidth]{logo_pwr.png}%
+        }{%
+            \fbox{\parbox[c][2.2cm][c]{\linewidth}{\centering\small Politechnika\\Wroclawska\\\itshape (logo\_pwr.png)}}%
+        }
+    \end{minipage}
+
+    \vspace{0.8em}
+    \noindent
+    \renewcommand{\arraystretch}{1.4}
+    \begin{tabularx}{\textwidth}{|l|X|l|X|}
+    \hline
+    \textbf{Kierunek} & #2 & \textbf{Termin} & #3 \\
+    \hline
+    \textbf{Imie, nazwisko, nr albumu} & #6 & \textbf{Data} & #8 \\
+    \hline
+    \textbf{Link do projektu} & \multicolumn{3}{l|}{#7} \\
+    \hline
+    \end{tabularx}
+    \renewcommand{\arraystretch}{1.0}
+
+    \vspace{2.5em}
+    \begin{center}
+        \textsc{\Large Sprawozdanie -- Miniprojekt nr~#9}
+    \end{center}
+    \vspace{1em}
+}
