@@ -13,6 +13,17 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{caption}
+\usepackage{siunitx}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.18}
+
+\sisetup{
+    output-exponent-marker=\ensuremath{\mathrm{e}},
+    round-mode=figures,
+    round-precision=3,
+    group-separator={\,}
+}
 
 \hypersetup{
     colorlinks=true,
@@ -154,10 +165,212 @@ aby zapobiec optymalizacji usuwającej wywołanie przez kompilator.
 
 \section{Wyniki pomiarów}
 
-\textit{Wykresy i analiza zostaną dodane po zebraniu pełnego zestawu wyników.}
+W tabelach poniżej zebrano średnie czasy wykonania pojedynczej operacji
+w nanosekundach dla obu implementacji. Operacje \texttt{peek} oraz
+\texttt{rozmiar} mają złożoność $O(1)$ w obu strukturach i ich czasy są na
+granicy rozdzielczości zegara, dlatego wartości należy traktować jako wskazanie
+rzędu wielkości.
+
+\subsection{Tabele wyników}
+
+\begin{table}[H]
+\centering
+\caption{Kopiec binarny -- średnie czasy operacji [ns].}
+\pgfplotstabletypeset[
+    col sep=comma,
+    columns/rozmiar/.style={column name={$n$}, column type=r, fixed, set thousands separator={\,}},
+    columns/insert/.style={column name={insert}, column type=r, sci, sci zerofill, precision=3},
+    columns/extract/.style={column name={extract}, column type=r, sci, sci zerofill, precision=3},
+    columns/peek/.style={column name={peek}, column type=r, fixed, precision=2},
+    columns/modify/.style={column name={modify}, column type=r, sci, sci zerofill, precision=3},
+    columns/rozmiarOp/.style={column name={rozmiar}, column type=r, fixed, precision=2},
+    every head row/.style={before row=\toprule, after row=\midrule},
+    every last row/.style={after row=\bottomrule}
+]{../wyniki/pomiary_kopiec.csv}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Lista wiązana -- średnie czasy operacji [ns].}
+\pgfplotstabletypeset[
+    col sep=comma,
+    columns/rozmiar/.style={column name={$n$}, column type=r, fixed, set thousands separator={\,}},
+    columns/insert/.style={column name={insert}, column type=r, sci, sci zerofill, precision=3},
+    columns/extract/.style={column name={extract}, column type=r, sci, sci zerofill, precision=3},
+    columns/peek/.style={column name={peek}, column type=r, fixed, precision=2},
+    columns/modify/.style={column name={modify}, column type=r, sci, sci zerofill, precision=3},
+    columns/rozmiarOp/.style={column name={rozmiar}, column type=r, fixed, precision=2},
+    every head row/.style={before row=\toprule, after row=\midrule},
+    every last row/.style={after row=\bottomrule}
+]{../wyniki/pomiary_lista.csv}
+\end{table}
+
+\subsection{Wykresy porównawcze}
+
+Wykresy zostały wykonane w skali logarytmicznej na obu osiach, co pozwala
+łatwo odczytać charakter zależności (linia prosta na wykresie log-log oznacza
+zależność potęgową).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{loglogaxis}[
+    xlabel={Rozmiar kolejki $n$},
+    ylabel={Średni czas insert [ns]},
+    legend pos=north west,
+    grid=both,
+    width=0.8\textwidth,
+    height=0.55\textwidth
+]
+\addplot table [col sep=comma, x=rozmiar, y=insert] {../wyniki/pomiary_kopiec.csv};
+\addplot table [col sep=comma, x=rozmiar, y=insert] {../wyniki/pomiary_lista.csv};
+\legend{Kopiec binarny, Lista wiązana}
+\end{loglogaxis}
+\end{tikzpicture}
+\caption{Czas operacji \texttt{insert(e, p)} w funkcji rozmiaru kolejki.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{loglogaxis}[
+    xlabel={Rozmiar kolejki $n$},
+    ylabel={Średni czas extractMax [ns]},
+    legend pos=north west,
+    grid=both,
+    width=0.8\textwidth,
+    height=0.55\textwidth
+]
+\addplot table [col sep=comma, x=rozmiar, y=extract] {../wyniki/pomiary_kopiec.csv};
+\addplot table [col sep=comma, x=rozmiar, y=extract] {../wyniki/pomiary_lista.csv};
+\legend{Kopiec binarny, Lista wiązana}
+\end{loglogaxis}
+\end{tikzpicture}
+\caption{Czas operacji \texttt{extractMax()} w funkcji rozmiaru kolejki.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{loglogaxis}[
+    xlabel={Rozmiar kolejki $n$},
+    ylabel={Średni czas modifyKey [ns]},
+    legend pos=north west,
+    grid=both,
+    width=0.8\textwidth,
+    height=0.55\textwidth
+]
+\addplot table [col sep=comma, x=rozmiar, y=modify] {../wyniki/pomiary_kopiec.csv};
+\addplot table [col sep=comma, x=rozmiar, y=modify] {../wyniki/pomiary_lista.csv};
+\legend{Kopiec binarny, Lista wiązana}
+\end{loglogaxis}
+\end{tikzpicture}
+\caption{Czas operacji \texttt{modifyKey(e, p)} w funkcji rozmiaru kolejki.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{loglogaxis}[
+    xlabel={Rozmiar kolejki $n$},
+    ylabel={Średni czas peek [ns]},
+    legend pos=north west,
+    grid=both,
+    width=0.8\textwidth,
+    height=0.55\textwidth
+]
+\addplot table [col sep=comma, x=rozmiar, y=peek] {../wyniki/pomiary_kopiec.csv};
+\addplot table [col sep=comma, x=rozmiar, y=peek] {../wyniki/pomiary_lista.csv};
+\legend{Kopiec binarny, Lista wiązana}
+\end{loglogaxis}
+\end{tikzpicture}
+\caption{Czas operacji \texttt{peek()} w funkcji rozmiaru kolejki.}
+\end{figure}
+
+\subsection{Analiza wyników}
+
+\subsubsection{Operacja insert}
+
+Wyniki potwierdzają oczekiwane złożoności obliczeniowe. Kopiec wykazuje
+charakterystyczny wolny wzrost czasu wraz z rosnącym $n$ -- przy 100--krotnym
+zwiększeniu rozmiaru (z $1\,000$ do $100\,000$) czas insertu rośnie tylko
+około 3-krotnie, co odpowiada $\log_2(100\,000)/\log_2(1\,000) \approx 1{,}66$
+po uwzględnieniu narzutów stałych i efektów cache. Lista wiązana zaś rośnie
+zgodnie z oczekiwanym $O(n)$: czas wstawienia rośnie liniowo z rozmiarem
+struktury, co dla $n = 100\,000$ daje czas pojedynczego wstawienia rzędu
+milisekund -- około cztery rzędy wielkości większy niż dla kopca.
+
+\subsubsection{Operacja extractMax}
+
+Tu sytuacja się odwraca. Lista wykonuje \texttt{extractMax} w czasie $O(1)$
+(zdjęcie głowy), niezależnie od rozmiaru, co potwierdzają stabilne czasy
+rzędu kilkudziesięciu nanosekund. Kopiec wymaga heapify-down i ma złożoność
+$O(\log n)$, więc czas rośnie -- dla $n = 100\,000$ jest to około
+\SI{600}{\nano\second}.
+
+\subsubsection{Operacja peek}
+
+Obie struktury obsługują \texttt{peek} w czasie stałym -- dla kopca to korzeń
+tablicy, dla listy głowa. Pomiary są na granicy rozdzielczości zegara
+i~oscylują wokół 1--3 ns niezależnie od rozmiaru, co potwierdza złożoność
+$O(1)$.
+
+\subsubsection{Operacja modifyKey}
+
+Operacja ta w obu implementacjach wymaga liniowego wyszukania elementu po
+wartości, więc ma złożoność $O(n)$. Dane potwierdzają to: dla obu struktur
+czas rośnie liniowo z rozmiarem. Lista jest jednak istotnie wolniejsza,
+ponieważ poza wyszukaniem konieczne jest fizyczne wypięcie i ponowne
+wstawienie węzła w odpowiednie miejsce, podczas gdy w kopcu wystarczy
+naprawa struktury w $O(\log n)$.
+
+Warto zauważyć efekt związany z gęstością wartości. Wartości elementów
+losowane są z zakresu $[-1000, 1000]$ (czyli $2001$ różnych wartości),
+podczas gdy rozmiar kolejki sięga $100\,000$. Oznacza to, że dla większych
+$n$ szansa znalezienia elementu o szukanej wartości jest wysoka i znajdujemy
+go już blisko początku tablicy/listy. Dla małych $n$ z kolei wiele
+\texttt{modifyKey} kończy się przejściem całej struktury bez sukcesu. Z tego
+powodu krzywa modifyKey dla kopca nie zawsze rośnie monotonicznie -- jest to
+artefakt pomiaru, a nie błąd implementacji.
+
+\subsubsection{Operacja rozmiar}
+
+Obie implementacje przechowują licznik elementów aktualizowany przy każdym
+\texttt{insert} i \texttt{extractMax}, więc \texttt{rozmiar} działa w czasie
+$O(1)$. Pomiary potwierdzają to -- czasy rzędu pojedynczych nanosekund są
+w~praktyce nierozróżnialne dla obu struktur.
 
 \section{Wnioski}
 
-\textit{Wnioski zostaną sformułowane na podstawie pomiarów.}
+\begin{enumerate}
+    \item Wybór struktury danych do implementacji kolejki priorytetowej
+          powinien zależeć od profilu obciążenia.
+          \begin{itemize}
+              \item Jeżeli głównym wzorcem użycia jest \texttt{insert} oraz
+                    \texttt{extractMax} (typowy przypadek dla algorytmów
+                    Dijkstry, Prima czy systemów obsługi zdarzeń) -- kopiec
+                    binarny jest zdecydowanie lepszym wyborem dzięki
+                    zrównoważeniu obu operacji w $O(\log n)$.
+              \item Jeżeli operacje \texttt{insert} są bardzo rzadkie,
+                    a~częste są \texttt{extractMax} lub \texttt{peek}, lista
+                    wiązana posortowana ma stałe $O(1)$ na te operacje.
+                    W praktyce takie scenariusze są rzadkie, bo i tak należy
+                    najpierw wstawić elementy, co dla listy jest $O(n)$.
+          \end{itemize}
+    \item Pomiary potwierdziły teoretyczne złożoności obliczeniowe wszystkich
+          rozważanych operacji. Kopiec binarny jest implementacją zrównoważoną,
+          natomiast lista wiązana jest skrajnie zoptymalizowana pod
+          \texttt{extractMax} i \texttt{peek} kosztem skrajnie powolnego
+          \texttt{insert}.
+    \item Strategia FIFO przy równych priorytetach została poprawnie
+          zrealizowana w obu implementacjach (w kopcu poprzez tie-break
+          po numerze wstawienia w komparatorze, a~w liście poprzez wstawienie
+          nowego elementu za istniejące o tym samym priorytecie).
+    \item Operacja \texttt{modifyKey} w obu strukturach jest w pesymistycznym
+          przypadku $O(n)$ z powodu liniowego wyszukania elementu po
+          wartości. Wprowadzenie indeksu (np. mapy wartość $\to$ pozycja)
+          mogłoby przyspieszyć tę operację, ale wykraczałoby to poza zakres
+          niniejszego projektu.
+\end{enumerate}
 
 \end{document}
