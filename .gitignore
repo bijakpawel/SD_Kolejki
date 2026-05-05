@@ -1,0 +1,23 @@
+# Pliki binarne
+*.exe
+*.o
+*.obj
+*.out
+kolejka
+
+# Visual Studio
+.vs/
+*.vcxproj.user
+Debug/
+Release/
+x64/
+x86/
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
